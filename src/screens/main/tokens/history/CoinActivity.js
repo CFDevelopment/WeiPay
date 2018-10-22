@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
-    wallet: state.newWallet.wallet,  
+    wallet: state.newWallet.wallet, // TODO change this to Hotwallet. 
   };
 };
 

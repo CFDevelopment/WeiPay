@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
  * @param {Object} state
  */
 const mapStateToProps = state => ({
-  walletAddress: state.newWallet.wallet.address,
+  walletAddress: state.newWallet.wallet.address, //TODO change this to hotwallet
 });
 
 export default connect(mapStateToProps, null)(CoinReceive);

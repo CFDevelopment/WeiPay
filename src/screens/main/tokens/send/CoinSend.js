@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     tokenData: state.Wallet.activeTokenData,
-    wallet: state.newWallet.wallet,
+    wallet: state.newWallet.wallet, // TODO: change this to hotwallet
     addressData: state.newWallet.QrData,
     token: state.newWallet.current_token,
     txnFee: state.newWallet.txnFee,
