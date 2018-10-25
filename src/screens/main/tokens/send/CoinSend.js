@@ -1,19 +1,17 @@
 import React, { Component } from 'react';
 import {
- View, Text, StyleSheet, Alert, TouchableOpacity, Image, SafeAreaView, TouchableWithoutFeedback, Dimensions, Keyboard, ActivityIndicator 
+ View, Text, StyleSheet, Alert, TouchableOpacity, Image, SafeAreaView, TouchableWithoutFeedback, Dimensions, Keyboard, ActivityIndicator,
 } from 'react-native';
 import { connect } from 'react-redux';
 import { FormInput } from 'react-native-elements';
 import { NavigationActions } from 'react-navigation';
-import RF from "react-native-responsive-fontsize"
+import RF from 'react-native-responsive-fontsize';
 import * as action from '../../../../actions/ActionCreator';
 import provider from '../../../../constants/Providers';
-import CoinSendTabNavigator from '../../../../components/customPageNavs/CoinSendTabNavigator';
 import ERC20ABI from '../../../../constants/data/json/ERC20ABI.json';
 import LinearButton from '../../../../components/LinearGradient/LinearButton';
 import ClearButton from '../../../../components/LinearGradient/ClearButton';
 import BoxShadowCard from '../../../../components/ShadowCards/BoxShadowCard';
-import Provider from '../../../../constants/Providers';
 import MaliciousAddresses from '../../../../constants/data/json/addresses_darklist.json';
 
 const ethers = require('ethers');
@@ -23,7 +21,6 @@ class CoinSend extends Component {
   constructor(props) {
     super(props);   
     const addressFromQRCode = this.props.addressData;
-    console.log(this.props.token);
     this.state = {
       toAddress: addressFromQRCode,
       value: 0,
@@ -31,7 +28,7 @@ class CoinSend extends Component {
       inputValue: addressFromQRCode,
       txnFee: this.props.txnFee,
       maliciousCheck: true,
-      maliciousComment: ''
+      maliciousComment: '',
     };
   }
 
@@ -41,7 +38,6 @@ class CoinSend extends Component {
    */
   renderAddress(addressInput) {
     let add = addressInput.trim();
-    console.log(add);
     this.setState({ inputValue: add, toAddress: add });
     this.props.getQRCodeData(addressInput);
   }
@@ -58,16 +54,14 @@ class CoinSend extends Component {
           'Invalid Ether Amount',
           'Please enter an amount greater than 0.',
           [
-            { text: 'OK', onPress: () => { return console.log('OK Pressed')} },
+            { text: 'OK', onPress: () => { return console.log('OK Pressed');} },
           ],
           { cancelable: false },
         );
       } else {
-        console.log(`is a number ${valueInput}`);
         this.setState({ value: valueInput });
       }
     } else {
-      console.log(`not a number ${valueInput}`);
       this.setState({ value: 0 });
     }
   }
@@ -82,11 +76,12 @@ class CoinSend extends Component {
    * Conducts the transction between the two addresses
    */
   sendTransaction = async () => {
-    this.setState({maliciousCheck: false});
-    var response = await this.checkMaliciousAddresses(this.state.toAddress);
+    this.setState({ maliciousCheck: false });
+    let response = await this.checkMaliciousAddresses(this.state.toAddress);
     if(response.flag) {
-      this.setState({maliciousCheck: true});
+      this.setState({ maliciousCheck: true });
     } else {
+      this.setState({ maliciousCheck: true });
       const amountString = this.state.value.toString();
       const receivingAddress = this.state.toAddress;
       const amount = ethers.utils.parseEther(amountString);
@@ -108,14 +103,16 @@ class CoinSend extends Component {
   }
 
   sendERC20Transaction = async () => {
-    this.setState({maliciousCheck: false});
-    var response = await this.checkMaliciousAddresses(this.state.toAddress);
+    this.setState({ maliciousCheck: false });
+    let response = await this.checkMaliciousAddresses(this.state.toAddress);
     if(response.flag) {
-      this.setState({maliciousCheck: true});
+      this.setState({ maliciousCheck: true });
     } else {
+      this.setState({ maliciousCheck: true });
       const val = this.state.value;    
       const toAddr = this.state.toAddress;
       const currentWallet = this.props.wallet;
+      currentWallet.provider = provider;
       const contract = new ethers.Contract(this.props.token.address, ERC20ABI, currentWallet);
       let overrideOptions = {
         gasLimit: 150000,
@@ -132,12 +129,11 @@ class CoinSend extends Component {
   }
 
   checkMaliciousAddresses = (address) => {
-    for(var i = 0; i < MaliciousAddresses.length; i++) {
+    for(let i = 0; i < MaliciousAddresses.length; i++) {
       if(address === MaliciousAddresses[i].address) {
-        console.log(MaliciousAddresses[i].address);
-        this.setState({maliciousComment:  MaliciousAddresses[i].comment})  
-        return { flag: true, "address" : MaliciousAddresses[i].address, 'comment' : MaliciousAddresses[i].comment };
-      }     
+        this.setState({ maliciousComment:  MaliciousAddresses[i].comment });  
+        return { flag: true, 'address' : MaliciousAddresses[i].address, 'comment' : MaliciousAddresses[i].comment };
+      }
     }
     return { flag: false };
   }
@@ -146,12 +142,12 @@ class CoinSend extends Component {
     try {
       let gasPriceString = await Provider.getGasPrice().then((gasPrice) => {
         gasPriceString = gasPrice.toString();
-        const gasPriceEth = utils.formatEther(gasPrice)
-        const txnFee = 21000 * gasPriceEth
+        const gasPriceEth = utils.formatEther(gasPrice);
+        const txnFee = 21000 * gasPriceEth;
         return txnFee;
       });
       await this.props.updateTxnFee(gasPriceString);
-      await this.setState({txnFee: gasPriceString})
+      await this.setState({ txnFee: gasPriceString });
     } catch (error) {
       console.log(error);
     }
@@ -187,9 +183,9 @@ class CoinSend extends Component {
     return (
       <SafeAreaView style={styles.safeAreaView}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={[styles.mainContainer,  this.state.maliciousCheck ? {backgroundColor: '#fafbfe'} : {backgroundColor: 'black'}]}>
-            <View style={[styles.boxShadowContainer, this.state.maliciousCheck ? null : {backgroundColor: 'black'}]}>
-              <View style={[styles.contentContainer, this.state.maliciousCheck ? null : {backgroundColor: 'black'}]}>
+          <View style={[styles.mainContainer,  this.state.maliciousCheck ? { backgroundColor: '#fafbfe' } : { backgroundColor: 'black' }]}>
+            <View style={[styles.boxShadowContainer, this.state.maliciousCheck ? null : { backgroundColor: 'black' }]}>
+              <View style={[styles.contentContainer, this.state.maliciousCheck ? null : { backgroundColor: 'black' }]}>
                 {
                    this.state.maliciousCheck ? 
                    <BoxShadowCard>
@@ -198,7 +194,7 @@ class CoinSend extends Component {
                       </Text>
                       <View style= {styles.barcodeImageContainer}>
                         <TouchableOpacity
-                          onPress= {() => {return this.navigate()}} >
+                          onPress= {() => {return this.navigate();}} >
                           <Image
                             source={require('../../../../assets/icons/barcode.png')}
                             style={styles.barcodeImage}
@@ -207,7 +203,7 @@ class CoinSend extends Component {
                       </View>
                       <View style={styles.inputContainer}>
                         {
-                          this.state.maliciousComment != "" ? 
+                          this.state.maliciousComment != '' ? 
                             <Text style={styles.maliciousCommentText}>Malicious - {this.state.maliciousComment} </Text>
                           : null
                         }
@@ -215,7 +211,7 @@ class CoinSend extends Component {
                             <FormInput
                               placeholder={'Public Address'}
                               onChangeText={this.renderAddress.bind(this)}
-                              ref={ref => {return this.inputAddress = ref}}
+                              ref={ref => {return this.inputAddress = ref;}}
                               inputStyle={styles.formAddress}
                               value={this.state.inputValue}
                             />
@@ -224,7 +220,7 @@ class CoinSend extends Component {
                             <FormInput
                               placeholder={'Amount'}
                               onChangeText={this.renderValue.bind(this)}
-                              ref={ref => {return this.inputAmount = ref}}
+                              ref={ref => {return this.inputAmount = ref;}}
                               inputStyle={styles.formAmount}
                             />
                           </View>
@@ -409,7 +405,7 @@ const styles = StyleSheet.create({
 
 });
 
-const mapStateToProps = ({Wallet, HotWallet, newWallet, contacts}) => {
+const mapStateToProps = ({ Wallet, HotWallet, newWallet, contacts }) => {
   return {
     tokenData: Wallet.activeTokenData,
     wallet: HotWallet.hotWallet.wallet,
