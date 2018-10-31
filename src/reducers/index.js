@@ -8,6 +8,7 @@ import WalletReducer from './wallet/Wallet';
 import DebugReducer from './wallet/Debug';
 import storage from 'redux-persist/lib/storage';
 import hotreducer from './wallet/HotWalletReducer';
+import exchange from './exchange/exchange';
 
 /**
  * Contains a reference to all the reducers being used in the applications.
@@ -21,6 +22,7 @@ const AppReducer = combineReducers({
   Wallet: WalletReducer,
   Debug: DebugReducer,
   HotWallet: hotreducer,
+  Exchange: exchange,
 });
 
 const rootReducer = (state, action) => {

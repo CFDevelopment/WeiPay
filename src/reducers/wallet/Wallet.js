@@ -46,7 +46,6 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    
     case SET_APP_PASSWORD_ROOT:
       return {
         ...state, hashedPassword: action.payload,
