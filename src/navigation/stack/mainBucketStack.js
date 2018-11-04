@@ -16,6 +16,7 @@ import TokenFunctionality from '../../screens/main/tokens/Index';
 import AddingTokensOrCoins from '../../screens/main/tokens/add/Index';
 import Contract from '../../screens/main/contracts/Contract';
 import Exchange from '../../screens/main/exchange/Exchange';
+import TradingPairDetails from '../../screens/main/exchange/TradingPairDetails';
 
 const CustomDrawerContentComponent = props => (
   <View style={styles.customContainer}>
@@ -44,6 +45,7 @@ const navigator = DrawerNavigator({
       AddTokenFunctionality: { screen: AddingTokensOrCoins },
       QCodeScanner: { screen: QrCodeScanner },
       contactAddresses: { screen: ContactAddresses },
+      tradingPairDetails: { screen: TradingPairDetails },
     },
     {
       initialRouteName: 'portfolioScreen',

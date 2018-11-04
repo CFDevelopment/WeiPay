@@ -13,19 +13,7 @@ import { fetchKyberTradingPairs } from '../../../actions/Exchange';
 
 const ethers = require('ethers');
 
-/**
- * Initial setup screen used to allow the user to give their wallet a name after
- * a new wallet has been created
- */
-class Exchange extends Component {
-  /**
-     * A new wallet is created, the wallet name is passed in along with usersWallets, which will be an 
-     * empty array when user initially creates a wallet in setup.
-     */
-    state = {
-      refresh: false,
-      ds: null,
-    };
+class TradingPairDetails extends Component {
 
     navigateToPin = () => {
       const navigateToPassword = NavigationActions.navigate({
@@ -34,34 +22,8 @@ class Exchange extends Component {
       this.props.navigation.dispatch(navigateToPassword);
     };
 
-    navigateToDetails = (tradingPairData) => {
-      console.log({tradingPairData});
-      const navigateToDetails= NavigationActions.navigate({
-        routeName: 'tradingPairDetails',
-        params: { tradingPairData },
-      });
-      this.props.navigation.dispatch(navigateToDetails);
-    }
-
     componentDidMount = () => {
-      this.props.fetchKyberTradingPairs();
-    }
-
-    handleListRefresh = async () => {
-      console.log('do something in handle refresh');
-    };
-
-    renderRow = (tradingPairData) => {
-      const { key, currentPrice } = tradingPairData;
-      return (
-        <TouchableWithoutFeedback onPress={()=>{this.navigateToDetails(tradingPairData);}}>
-          <View style={{ backgroundColor:'white', padding:10, borderColor:'black', borderWidth: 0.5 }}>
-            <Text>Trading Pair: {key} </Text>
-            <Text>Conversion Price: {currentPrice} </Text>
-            <Text>CAD: {currentPrice * this.props.tokenConversions['ETH']['CAD']} </Text>
-          </View>
-          </TouchableWithoutFeedback>
-      );
+      console.log(this.props.navigation.state.params.tradingPairData);
     }
 
     render() {
@@ -77,27 +39,9 @@ class Exchange extends Component {
                   backPage={'createOrRestore'}
                 />
               </View>
-              <Text style={styles.textHeader} >Exchange</Text>
-              <View style={styles.scrollViewContainer} >
-                <ScrollView style={styles.scrollView}>
-                {
-                  this.props.kyberTradingData === null
-                  ? null
-                  :            
-                   <FlatList
-                    data={this.props.kyberTradingData}
-                    showsVerticalScrollIndicator={false}
-                    renderItem= {({ item }) => { return this.renderRow(item); }}
-                    keyExtractor= {(item) => {
-                      return `${item.symbol}`;
-                    }}
-                    refreshing={this.state.refresh}
-                    onRefresh={this.handleListRefresh}
-                    extraData={this.props}
-                    // style={{ flex: 1 }}
-                  />
-                }
-                </ScrollView>
+              <Text style={styles.textHeader} >Trading Pair Details</Text>
+              <View style={styles.tradingDetailsContainer} >
+          
               </View>
               <View style={styles.btnContainer}>
                 <LinearButton
@@ -130,15 +74,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafbfe',
     width: '100%',
   },
-  scrollViewContainer: {
+  tradingDetailsContainer: {
     flex: 4,
-    // paddingBottom: '2.5%',
-    // paddingTop: '2.5%',
     backgroundColor: 'yellow',
-  },
-  scrollView: {
-    height: '60%',
-    backgroundColor: 'purple',
   },
   navContainer: {
     flex: 0.65,
@@ -226,4 +164,4 @@ const mapStateToProps = ({ newWallet, HotWallet, Exchange, Wallet }) => {
   return { wallet, debugMode, kyberTradingData, tokenConversions };
 };
 
-export default connect(mapStateToProps, { fetchKyberTradingPairs })(Exchange);
+export default connect(mapStateToProps, { fetchKyberTradingPairs })(TradingPairDetails);

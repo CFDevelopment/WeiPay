@@ -16,6 +16,7 @@ export function fetchKyberTradingPairs() {
       .then((res) => {
           const { data } = res;
           let tradingData = [];
+          let count = 0;
           for (var key in data) {
             let tradingItem = {};
             tradingItem.key = key;
@@ -27,6 +28,8 @@ export function fetchKyberTradingPairs() {
             tradingItem.name = data[key]['name'];
             tradingItem.quoteVolume = data[key]['quoteVolume'];
             tradingItem.symbol = data[key]['symbol'];
+            tradingItem.index = count;
+            count++;
             tradingData.push(tradingItem);
           }
         dispatch({ type: FETCHING_TRADING_PAIRS_DATA_SUCCESS, payload: tradingData });
