@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, TouchableWithoutFeedback, StyleSheet, Text, Keyboard, Dimensions, SafeAreaView,
+  View, TouchableWithoutFeedback, StyleSheet, Text, Keyboard, Dimensions, SafeAreaView, ScrollView, FlatList,
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -22,6 +22,10 @@ class Exchange extends Component {
      * A new wallet is created, the wallet name is passed in along with usersWallets, which will be an 
      * empty array when user initially creates a wallet in setup.
      */
+    state = {
+      refresh: false,
+      ds: null,
+    };
 
     navigateToPin = () => {
       const navigateToPassword = NavigationActions.navigate({
@@ -32,12 +36,47 @@ class Exchange extends Component {
     };
 
     componentDidMount = () => {
-      // instantiateKyber(this.props.wallet);
-      //fetchKyberTradingPairs();
       this.props.fetchKyberTradingPairs();
+      // formatTradingPairs();
       console.log('after inst kyb');
     }
 
+    // formatTradingPairs = () => {
+    //   const data = this.props.kyberTradingData;
+    // }
+
+    handleListRefresh = async () => {
+      // await this.balanceCalculations();
+      console.log('do something in handle refresh');
+    };
+
+    /**
+     * baseVolume: 0.5244175297
+contractAddress: "0xb98d4c97425d9908e66e53a6fdf673acca0be986"
+currentPrice: 0.00092231728418256
+decimals: 18
+lastPrice: 0.0009287929321068432
+lastTimestamp: 1541261109
+name: "ArcBlock"
+quoteVolume: 564.6226533081261
+symbol: "ABT"
+     */
+    // renderRow = (tradingPairData) => {
+    //   const { symbol } = tradingPairData;
+    //   console.log('we in here');
+    //   console.log({ symbol });
+    //   return (
+    //       <View style={{ flex: 1 }}>
+    //         <Text> hey </Text>
+    //       </View>
+    //   );
+    // }
+
+    returnTradingData = () => {
+      const data = this.props.kyberTradingData;
+      console.log({data});
+      
+    }
 
     render() {
       return (
@@ -53,7 +92,33 @@ class Exchange extends Component {
                 />
               </View>
               <Text style={styles.textHeader} >Exchange</Text>
-            
+              <View style={styles.scrollViewContainer} >
+                <ScrollView style={styles.scrollView}>
+                {
+                  this.props.kyberTradingData === null
+                  ? null
+                  : <View> { this.returnTradingData() } </View>
+                }
+                {/* {
+                  this.props.kyberTradingData === null
+                    ? <Text> No data </Text>
+                    :
+                    <Text> {this.props.kyberTradingData} </Text>
+                    // <FlatList
+                    //   data={this.props.kyberTradingData}
+                    //   showsVerticalScrollIndicator={false}
+                    //   renderItem= {({ item }) => { return this.renderRow(item); }}
+                    //   keyExtractor= {(item) => {
+                    //     return `${item.symbol}`;
+                    //   }}
+                    //   refreshing={this.state.refresh}
+                    //   onRefresh={this.handleListRefresh}
+                    //   // extraData={this.props}
+                    //   style={{flex:1}}
+                    // />
+                } */}
+                </ScrollView>
+              </View>
               <View style={styles.btnContainer}>
                 <LinearButton
                   onClickFunction={this.navigateToPin}
@@ -85,6 +150,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafbfe',
     width: '100%',
   },
+  scrollViewContainer: {
+    flex: 4,
+    // paddingBottom: '2.5%',
+    // paddingTop: '2.5%',
+    backgroundColor: 'yellow',
+  },
+  scrollView: {
+    height: '60%',
+    backgroundColor: 'purple',
+  },
   navContainer: {
     flex: 0.65,
   },
@@ -98,7 +173,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
     paddingLeft: '9%',
     color: '#1a1f3e',
-    flex: 0.75,
+    flex: 0.5,
+    backgroundColor: 'blue',
   },
   contentContainer: {
     flex: 1,
@@ -122,17 +198,18 @@ const styles = StyleSheet.create({
     letterSpacing: 0.4,
     fontSize: 16,
     fontFamily: 'WorkSans-Regular',
-    borderBottomWidth: 0.001
+    borderBottomWidth: 0.001,
   },
   formInputContainer: {
     width: '90%',
     marginLeft: '5%',
   },
   btnContainer: {
-    flex: 2.5,
+    flex: 1,
     alignItems: 'stretch',
     justifyContent: 'flex-end',
     width: '100%',
+    backgroundColor: 'green',
   },
   button: {
     width: '82%',
@@ -161,10 +238,11 @@ const styles = StyleSheet.create({
  * This method is not being used here
  * @param {Object} param
  */
-const mapStateToProps = ({ newWallet, HotWallet }) => {
+const mapStateToProps = ({ newWallet, HotWallet, Exchange }) => {
   const wallet = HotWallet.hotWallet;
   const debugMode = newWallet.debugMode;
-  return { wallet, debugMode };
+  const { kyberTradingData } = Exchange;
+  return { wallet, debugMode, kyberTradingData };
 };
 
 export default connect(mapStateToProps, { fetchKyberTradingPairs })(Exchange);
