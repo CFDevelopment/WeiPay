@@ -2,7 +2,9 @@ import kyberAbi from '../../constants/data/json/kyberRopstenAbi';
 import provider from '../../constants/Providers';
 
 const ethers = require('ethers');
-const kyberAddress = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755';
+const kyberAddressMainnet = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755';
+const kyberAddressRopsten = ''
+
 
 export const instantiateKyber = async ({ wallet }) => {
   console.log('we in?');
@@ -10,7 +12,7 @@ export const instantiateKyber = async ({ wallet }) => {
   
   try {
     const initializedWallet = new ethers.Wallet(wallet.privateKey, provider);
-    const kyberNetworkContract = await new ethers.Contract(kyberAddress, kyberAbi, initializedWallet);
+    const kyberNetworkContract = await new ethers.Contract(kyberAddressMainnet, kyberAbi, initializedWallet);
     return kyberNetworkContract;
   } catch (err) {
     console.log({ err });
@@ -21,10 +23,10 @@ export const instantiateKyber = async ({ wallet }) => {
 /**
  * need to get the address of src, so what are you sending?
  */
-export const expectedRate = () => {
-  let result = await kyberNetworkProxyContract.methods.getExpectedRate(
-    ETH_TOKEN_ADDRESS, //ERC20 src
-    KNC_TOKEN_ADDRESS,  //ERC20 dest
-    ETH_WEI_PRICE //uint srcQty
-    ).call()
+export const expectedRate = async () => {
+  // let result = await kyberNetworkProxyContract.methods.getExpectedRate(
+  //   ETH_TOKEN_ADDRESS, //ERC20 src
+  //   KNC_TOKEN_ADDRESS,  //ERC20 dest
+  //   ETH_WEI_PRICE //uint srcQty
+  //   ).call()
 };

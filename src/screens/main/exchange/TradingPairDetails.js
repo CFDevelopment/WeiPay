@@ -37,6 +37,36 @@ class TradingPairDetails extends Component {
         console.log('before');
         const kyberContract = await instantiateKyber(this.props.wallet);
         console.log({kyberContract});
+
+        const src = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'; // ETH
+        const dest = '0xdd974D5C2e2928deA5F71b9825b8b646686BD200'; // KNC
+        //const srcQty = new web3.utils.BN('3000000000000000000000')
+      
+        try {
+          const srcQty = ethers.utils.bigNumberify('3000000000000000000000');
+          console.log(srcQty);
+          let result = await kyberContract.getExpectedRate(
+            src,
+            dest,
+            srcQty,
+        ).call();
+        } catch (err) {
+          console.log({err});
+        }
+    
+
+        console.log({result});
+        
+
+        // const ETH_TOKEN_ADDRESS = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee';
+        // const KNC_TOKEN_ADDRESS = '';
+
+        // let result = await kyberContract.methods.getExpectedRate(
+        //   ETH_TOKEN_ADDRESS, //ERC20 src
+        //   KNC_TOKEN_ADDRESS,  //ERC20 dest
+        //   ETH_WEI_PRICE //uint srcQty
+        //   ).call()
+
     }
 
     render() {
