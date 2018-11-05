@@ -6,6 +6,7 @@ import { NavigationActions } from 'react-navigation';
 import { connect } from 'react-redux';
 import RF from 'react-native-responsive-fontsize';
 import LinearButton from '../../../components/linearGradient/LinearButton';
+import ClearButton from '../../../components/linearGradient/ClearButton';
 import BoxShadowCard from '../../../components/shadowCards/BoxShadowCard';
 import BackWithMenuNav from '../../../components/customPageNavs/BackWithMenuNav';
 import { instantiateKyber } from '../../../scripts/exchange/exchangeInit';
@@ -15,6 +16,10 @@ const ethers = require('ethers');
 
 class TradingPairDetails extends Component {
 
+    state = {
+      selectedTradingData: this.props.navigation.state.params.tradingPairData,
+    };
+
     navigateToPin = () => {
       const navigateToPassword = NavigationActions.navigate({
         routeName: 'mainstack',
@@ -23,10 +28,29 @@ class TradingPairDetails extends Component {
     };
 
     componentDidMount = () => {
-      console.log(this.props.navigation.state.params.tradingPairData);
+      console.log(this.state.selectedTradingData);
+    }
+
+    getExchangeRate = async () => {
+        //instantiate contract 
+        //invoke method
+        console.log('before');
+        const kyberContract = await instantiateKyber(this.props.wallet);
+        console.log({kyberContract});
     }
 
     render() {
+      const {
+        name,
+        quoteVolume,
+        symbol,
+        baseVolume,
+        contractAddress,
+        key,
+        lastPrice,
+        lastTimestamp,
+      } = this.state.selectedTradingData;
+
       return (
         <SafeAreaView style={styles.safeAreaView}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -41,8 +65,24 @@ class TradingPairDetails extends Component {
               </View>
               <Text style={styles.textHeader} >Trading Pair Details</Text>
               <View style={styles.tradingDetailsContainer} >
-          
+                <Text>Trading Pair: {key} </Text>
+                <Text>Name: { name } </Text>
+                <Text>Symbol: { symbol } </Text>
+                <Text>Base Volume: { baseVolume } </Text>
+                <Text>Quote Volume: { quoteVolume } </Text>
+                <Text>Contract Address: { contractAddress } </Text>
+                <Text>Last Price: { lastPrice } </Text>
+                <Text>Last Timestamp: { lastTimestamp } </Text>
+
+                <Text> Get most recent exchange rate </Text>
+                <ClearButton
+                  onClickFunction={this.getExchangeRate}
+                  buttonText="Get Current Rate"
+                  customStyles={styles.button}
+                  buttonStateEnabled= { this.props.testWalletName === null && this.props.tempWalletName === null }
+                />
               </View>
+
               <View style={styles.btnContainer}>
                 <LinearButton
                   onClickFunction={this.navigateToPin}
@@ -77,6 +117,7 @@ const styles = StyleSheet.create({
   tradingDetailsContainer: {
     flex: 4,
     backgroundColor: 'yellow',
+    padding: '9%',
   },
   navContainer: {
     flex: 0.65,
