@@ -17,6 +17,7 @@ import AddingTokensOrCoins from '../../screens/main/tokens/add/Index';
 import Contract from '../../screens/main/contracts/Contract';
 import Exchange from '../../screens/main/exchange/Exchange';
 import TradingPairDetails from '../../screens/main/exchange/TradingPairDetails';
+import Network from '../../screens/main/menu/settings/Network';
 
 const CustomDrawerContentComponent = props => (
   <View style={styles.customContainer}>
@@ -70,6 +71,7 @@ const navigator = DrawerNavigator({
   Tokens: { screen: AddingTokensOrCoins },
   Contracts: { screen: Contract },
   Exchange: { screen: Exchange },
+  Networks: { screen: Network },
 }, {
   headerMode: 'none',
   lazy: true,
