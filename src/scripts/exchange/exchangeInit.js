@@ -1,14 +1,17 @@
 import kyberAbi from '../../constants/data/json/kyberRopstenAbi';
-import provider from '../../constants/Providers';
+// import provider from '../../constants/Providers';
 
 const ethers = require('ethers');
 const kyberAddressMainnet = '0x818E6FECD516Ecc3849DAf6845e3EC868087B755';
 const kyberAddressRopsten = ''
 
 
-export const instantiateKyber = async ({ wallet }) => {
+export const instantiateKyber = async (walletObj, provider) => {
   console.log('we in?');
+
+  const {wallet} = walletObj;
   console.log({wallet});
+  console.log({provider});
   
   try {
     const initializedWallet = new ethers.Wallet(wallet.privateKey, provider);

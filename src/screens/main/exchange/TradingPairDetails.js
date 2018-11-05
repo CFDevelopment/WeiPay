@@ -11,6 +11,7 @@ import BoxShadowCard from '../../../components/shadowCards/BoxShadowCard';
 import BackWithMenuNav from '../../../components/customPageNavs/BackWithMenuNav';
 import { instantiateKyber } from '../../../scripts/exchange/exchangeInit';
 import { fetchKyberTradingPairs } from '../../../actions/Exchange';
+import getNetworkProvider from '../../../constants/Providers';
 
 const ethers = require('ethers');
 
@@ -18,6 +19,7 @@ class TradingPairDetails extends Component {
 
     state = {
       selectedTradingData: this.props.navigation.state.params.tradingPairData,
+      provider: null,
     };
 
     navigateToPin = () => {
@@ -27,32 +29,36 @@ class TradingPairDetails extends Component {
       this.props.navigation.dispatch(navigateToPassword);
     };
 
-    componentDidMount = () => {
+    componentDidMount = async () => {
       console.log(this.state.selectedTradingData);
+      const provider = await getNetworkProvider(this.props.network);
+      console.log({provider});
+      await this.setState({ provider });
     }
 
     getExchangeRate = async () => {
-        //instantiate contract 
-        //invoke method
         console.log('before');
-        const kyberContract = await instantiateKyber(this.props.wallet);
+        console.log(this.state.provider);
+
+
+        const kyberContract = await instantiateKyber(this.props.wallet, this.state.provider);
         console.log({kyberContract});
 
-        const src = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'; // ETH
-        const dest = '0xdd974D5C2e2928deA5F71b9825b8b646686BD200'; // KNC
-        //const srcQty = new web3.utils.BN('3000000000000000000000')
+        // const src = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'; // ETH
+        // const dest = '0xdd974D5C2e2928deA5F71b9825b8b646686BD200'; // KNC
+        // //const srcQty = new web3.utils.BN('3000000000000000000000')
       
-        try {
-          const srcQty = ethers.utils.bigNumberify('3000000000000000000000');
-          console.log(srcQty);
-          let result = await kyberContract.getExpectedRate(
-            src,
-            dest,
-            srcQty,
-        ).call();
-        } catch (err) {
-          console.log({err});
-        }
+        // try {
+        //   const srcQty = new ethers.utils.bigNumberify('3000000000000000000000');
+        //   console.log(srcQty);
+        //   let result = await kyberContract.methods.getExpectedRate(
+        //     src,
+        //     dest,
+        //     srcQty,
+        // ).call();
+        // } catch (err) {
+        //   console.log({err});
+        // }
     
 
         console.log({result});
@@ -231,8 +237,8 @@ const mapStateToProps = ({ newWallet, HotWallet, Exchange, Wallet }) => {
   const wallet = HotWallet.hotWallet;
   const debugMode = newWallet.debugMode;
   const { kyberTradingData } = Exchange;
-  const { tokenConversions } = Wallet;
-  return { wallet, debugMode, kyberTradingData, tokenConversions };
+  const { tokenConversions, network } = Wallet;
+  return { wallet, debugMode, kyberTradingData, tokenConversions, network };
 };
 
 export default connect(mapStateToProps, { fetchKyberTradingPairs })(TradingPairDetails);
